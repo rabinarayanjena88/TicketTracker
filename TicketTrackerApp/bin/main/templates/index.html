@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Ticket Tracker Application</title>
+	<link rel="stylesheet" href="css/style.css" type="text/css">
+	<script src="js/script.js"></script>
+
+</head>
+
+<body>
+	<div class="topbar">
+		<h3>Ticket Tracker Application</h3>
+		<ul class="quick-links">
+			<li><a href="/">Tickets</a></li>
+			<li><a href="/newTicket">New Ticket</a></li>
+		</ul>
+	</div>
+	<div class="container-fluid">
+		<div class="table-container">
+			<div class="header">
+				<h1>List of Tickets</h1>
+				<div class="search-container">
+					<form th:action="@{/search}" method="post">
+						<input type="search" name="query" placeholder="Search..." class="search-input" required>
+						<button type="submit" class="search-button">Search</button>
+					</form>
+				</div>
+			</div>
+
+			<div class="table-responsive">
+				<table>
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Ticket Title</th>
+							<th>Ticket Short Description</th>
+							<th>Ticket Created on</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:if="${#lists.isEmpty(tickets)}">
+							<td colspan="5" style="text-align: center;">No data available</td>
+						</tr>
+						<tr th:each="ticket : ${tickets}">
+							<td th:text="${ticket.id}">ID</td>
+							<td th:text="${ticket.title}">Title</td>
+							<td th:text="${ticket.description}">Description</td>
+							<td th:text="${#dates.format(ticket.createdDate, 'dd MM yyyy')}">Created Date</td>
+							<td class="action-buttons">
+								<form th:action="@{/editTicket}" method="post" class="edit-form">
+									<input type="hidden" name="id" th:value="${ticket.id}" />
+									<button type="submit">Edit</button>
+								</form>
+								<form th:action="@{/deleteTicket/{id}(id=${ticket.id})}" method="post"
+									onsubmit="return confirm('Are you sure you want to delete this ticket?')"
+									class="delete-form">
+									<input type="hidden" name="_method" value="DELETE">
+									<button type="submit">Delete</button>
+								</form>
+								<form th:action="@{/}" method="get" class="view-form">
+									<button type="submit">View</button>
+								</form>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+
+</body>
+
+</html>
